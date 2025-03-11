@@ -178,6 +178,9 @@
   controls.registerMethod('inElement',    new Marzipano.ElementPressControlMethod(viewInElement,  'zoom', -velocity, friction), true);
   controls.registerMethod('outElement',   new Marzipano.ElementPressControlMethod(viewOutElement, 'zoom',  velocity, friction), true);
 
+  var deviceOrientationControlMethod = new DeviceOrientationControlMethod();
+  controls.registerMethod('deviceOrientation', deviceOrientationControlMethod);
+
   function sanitize(s) {
     return s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;');
   }
@@ -189,6 +192,7 @@
     startAutorotate();
     updateSceneName(scene);
     updateSceneList(scene);
+    enableGyro(scene);
   }
 
   function updateSceneName(scene) {
@@ -243,6 +247,17 @@
       startAutorotate();
     }
   }
+
+  function enableGyro(scene) {
+	  deviceOrientationControlMethod.getPitch(function(err, pitch) {
+		if (!err) {
+		  scene.view.setPitch(pitch);
+		}
+	  });
+	  controls.enableMethod('deviceOrientation');
+	  giroenabled = true;
+	  toggleElementGiro.className = 'enabled';
+	}
 
   function createLinkHotspotElement(hotspot) {
 
